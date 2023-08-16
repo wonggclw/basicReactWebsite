@@ -3,9 +3,9 @@ import './App.css';
 import React, { useState, useEffect } from 'react';
 
 //what happens if enter is pressed with nothing in the cache?
+//what happens if enter is pressed multiple times in a row?
 //what happens if a function button is pressed twice in a row without any number change?
 //what happens if the number of characters exceeds the display limit? Where do I want to round to?
-//first time around - setting mod but the cache is still 0. What to do for the first round? Might need to set a isFirst Time thingy
 
 function App() {
   const [cache, setCache] = useState(0.0);
@@ -30,6 +30,12 @@ function App() {
   const [currOperator, setCurrOperator] = useState(operator.plus);
 
   useEffect(() => {
+    if(stateSwitch == currVal.cache){
+      setScreen(cache);
+    }
+    if(stateSwitch == currVal.mod){
+      setScreen(mod);
+    }
   })
   
   function numberClick(number){
@@ -69,6 +75,7 @@ function App() {
     
     setMod(0);
     //what do I actually need to set the screen to?
+    setStateSwitch(currVal.cache);
     setScreen(cache);
     setOperator(func);
     setMathDone(false);
@@ -142,6 +149,7 @@ function App() {
 
   function enter(){
     doMath();
+    setStateSwitch(currVal.cache);
     setScreen(cache);
   }
 
