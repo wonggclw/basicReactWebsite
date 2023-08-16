@@ -6,12 +6,15 @@ import React, { useState, useEffect } from 'react';
 //what happens if enter is pressed multiple times in a row?
 //what happens if a function button is pressed twice in a row without any number change?
 //what happens if the number of characters exceeds the display limit? Where do I want to round to?
+//decimals
+//what happens if you type a number in right after another number?
 
 function App() {
   const [cache, setCache] = useState(0.0);
   const [mod, setMod] = useState(0.0);
   const [onScreen, setScreen] = useState(0);
   const [isMathDone, setMathDone] = useState(false);
+  const [justCleared, setJustCleared] = useState(false);
   
   const currVal  = {
     mod: 0,
@@ -36,7 +39,14 @@ function App() {
     if(stateSwitch == currVal.mod){
       setScreen(mod);
     }
-  })
+  }, [stateSwitch])
+
+  useEffect(() => {
+    if(justCleared){
+      enableButtons();
+      setJustCleared(false);
+    }
+  }, [setCache, setMod])
   
   function numberClick(number){
     setStateSwitch(currVal.mod);
@@ -130,20 +140,43 @@ function App() {
   }
 
   function clear(){
-    alert("clearing!");
     
     switch(stateSwitch){
       case currVal.cache:
-        setCache(0);
-        setMod(0);
-        alert("case cache!");
+        disableButtons();
+        setJustCleared(true);
+        setCache(0.0);
+        setMod(0.0);
         setScreen(0);
+        setCurrOperator(currVal.add);
+        setMathDone(false);
+        alert("case cache!");
         break;
       case currVal.mod:
-        setMod(0);
+        disableButtons();
+        setJustCleared(true);
+        setMod(0.0);
+        setStateSwitch(currVal.cache);
         setScreen(0);
         alert("case mod!");
         break;
+    }
+
+    alert(cache + ", " + mod);
+  }
+
+  function disableButtons(){
+    var allButtons = document.getElementsByClassName("button");
+    for(var i = 0; i < allButtons.length; i++){
+      allButtons[i].disabled = true;
+    }
+  }
+
+  function enableButtons(){
+    var allButtons = document.getElementsByClassName("button");
+    alert("enabling!");
+    for(var i = 0; i < allButtons.length; i++){
+      allButtons[i].disabled = false;
     }
   }
 
@@ -155,10 +188,10 @@ function App() {
 
   let digits = [];
   for(let i = 0; i < 10; i++) digits.push(i);
-  let digitButtons = digits.map(d => <div className="button" onClick={e => numberClick(d)}>{d}</div>);
+  let digitButtons = digits.map(d => <button className="button" onClick={e => numberClick(d)}>{d}</button>);
 
   let functions = ['+', '-', 'x', '÷'];
-  let functionButtons = functions.map(d => <div className='func button' onClick={e => funcClick(d)}>{d}</div>)
+  let functionButtons = functions.map(d => <button className='func button' onClick={e => funcClick(d)}>{d}</button>)
 
   return (
     <div className="App">
@@ -175,6 +208,8 @@ function App() {
           </div>
         </div>
       </div>
+      <button onClick={e => enableButtons()}>Enable!</button>
+      <button onClick={e => disableButtons()}>Disable!</button>
     </div>
   );
 }

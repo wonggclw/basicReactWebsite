@@ -7,6 +7,10 @@
   background-color: black;
 }
 
+button{
+  background-color: rgba(0,0,0,0);
+}
+
 #base{
   width:28vw;
   height:40vw;
