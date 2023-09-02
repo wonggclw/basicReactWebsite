@@ -41,12 +41,19 @@ function App() {
     }
   }, [stateSwitch])
 
+  // useEffect(() => {
+  //   if(justCleared){
+  //     enableButtons();
+  //     setJustCleared(false);
+  //   }
+  // }, [setCache, setMod])
+
   useEffect(() => {
     if(justCleared){
       enableButtons();
       setJustCleared(false);
     }
-  }, [setCache, setMod])
+  })
   
   function numberClick(number){
     setStateSwitch(currVal.mod);
